@@ -1,0 +1,32 @@
+安装验证日期: 2026-10-29（America/Los_Angeles）
+后续实机复查成功:
+- 已枚举 STM32 Virtual COM Port 0483:5740，端口 /dev/ttyACM0
+- SDK 成功连接，实际设备 SN 为 H15L49G00062（与此前提供的 H15R47X00293 不同）
+- 设备地址 120（0x78），LEFT_HAND，online=true，hand_status=1（正常）
+- motor_enabled=false，POSITION_CONTROL_MODE，fault_codes=[]
+- 只读查询退出码 0；未调用初始化、使能或动作接口
+- 用户确认左手后，status.sh 和状态程序已改为校验 H15L49G00062 / LEFT_HAND
+- 默认使用稳定的 USB by-id 路径定位设备，可直接运行 /home/limit/gmh15-sdk/status.sh
+- 证据: status-H15L49G00062.log；下文未枚举设备的结果是安装阶段的历史记录
+
+设备: gripette / 10.47.253.224
+当前目标灵巧手 SN: H15L49G00062（左手）；原 H15R47X00293 仅用于早前 SDK 查询
+
+完成:
+- /home/limit/gmh15-sdk 独立安装目录
+- Ubuntu 22.04 ARM64 Docker 镜像 gmh15-sdk:3.9.0
+- 官方 DexHandSDK C++ 库 3.9.0 与 pxdex Python 包 3.9.0
+- 容器内 Python 3.10；主机 Debian 12 / Python 3.11 保留
+- SDK 加载实测返回 {"sdk_version": "DexHandSDK_3.9.0"}，退出码 0
+- 状态查询程序仅调用连接、SN、状态读取和断开接口，未包含动作或初始化接口
+
+安装阶段历史记录（已由上方成功复查结果取代）:
+- lsusb 仍只有 4 个根集线器，没有外接 USB 设备
+- /dev/ttyACM0 不存在，设备检查入口退出码 2
+- 因此没有连接上 GMH15，也没有读取设备 SN、电机状态或故障码
+- 未执行电机初始化、使能、失能、位置/电流/速度设置、标定、清故障或固件升级
+
+后续:
+确认 GMH15 独立电源与 USB 数据链路；USB 枚举成功后运行:
+  /home/limit/gmh15-sdk/status.sh /dev/ttyACM0
+此命令是单次读取，不常驻，不自动启动。

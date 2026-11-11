@@ -1,0 +1,134 @@
+<mujoco model="DexH15_left_urdf">
+  <compiler angle="radian" meshdir="/opt/models/left/meshes/" boundmass="1e-06" boundinertia="1e-09"/>
+
+  <asset>
+    <mesh name="left_palm_link" content_type="model/stl" file="left_palm_link.STL"/>
+    <mesh name="left_index_camera_link_0" content_type="model/stl" file="left_index_camera_link_0.STL"/>
+    <mesh name="left_thumb_link_0" content_type="model/stl" file="left_thumb_link_0.STL"/>
+    <mesh name="left_thumb_link_1" content_type="model/stl" file="left_thumb_link_1.STL"/>
+    <mesh name="left_thumb_link_2" content_type="model/stl" file="left_thumb_link_2.STL"/>
+    <mesh name="left_thumb_tactile_link_0" content_type="model/stl" file="left_thumb_tactile_link_0.STL"/>
+    <mesh name="left_index_link_0" content_type="model/stl" file="left_index_link_0.STL"/>
+    <mesh name="left_index_link_1" content_type="model/stl" file="left_index_link_1.STL"/>
+    <mesh name="left_index_link_2" content_type="model/stl" file="left_index_link_2.STL"/>
+    <mesh name="left_index_tactile_link_0" content_type="model/stl" file="left_index_tactile_link_0.STL"/>
+    <mesh name="left_middle_link_0" content_type="model/stl" file="left_middle_link_0.STL"/>
+    <mesh name="left_middle_link_1" content_type="model/stl" file="left_middle_link_1.STL"/>
+    <mesh name="left_middle_link_2" content_type="model/stl" file="left_middle_link_2.STL"/>
+    <mesh name="left_middle_tactile_link_0" content_type="model/stl" file="left_middle_tactile_link_0.STL"/>
+    <mesh name="left_ring_link_0" content_type="model/stl" file="left_ring_link_0.STL"/>
+    <mesh name="left_ring_link_1" content_type="model/stl" file="left_ring_link_1.STL"/>
+    <mesh name="left_ring_link_2" content_type="model/stl" file="left_ring_link_2.STL"/>
+    <mesh name="left_ring_tactile_link_0" content_type="model/stl" file="left_ring_tactile_link_0.STL"/>
+    <mesh name="left_pinky_link_0" content_type="model/stl" file="left_pinky_link_0.STL"/>
+    <mesh name="left_pinky_link_1" content_type="model/stl" file="left_pinky_link_1.STL"/>
+    <mesh name="left_pinky_link_2" content_type="model/stl" file="left_pinky_link_2.STL"/>
+    <mesh name="left_pinky_tactile_link_0" content_type="model/stl" file="left_pinky_tactile_link_0.STL"/>
+  </asset>
+
+  <worldbody>
+    <body name="left_palm_link">
+      <inertial pos="-0.000224528 0.00158308 -0.021484" quat="0.707826 -0.073409 0.0189105 0.702308" mass="0.138023" diaginertia="0.00015752 0.00010447 9.33665e-05"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.929412 0.705882 0.568627 1" mesh="left_palm_link"/>
+      <body name="left_index_camera_link_0" pos="0.0300185 -0.0183267 -0.0178079" quat="0 1 0 0">
+        <inertial pos="-0.0345309 -0.00144237 0.0139434" quat="0.619848 0.340278 -0.340278 0.619848" mass="0.000654042" diaginertia="1.20146e-08 9.12315e-09 8.50388e-09"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="left_index_camera_link_0"/>
+      </body>
+      <body name="left_thumb_link_0" pos="0.030018 -0.018327 -0.017808" quat="-3.67321e-06 1 0 0">
+        <inertial pos="0.00886191 -0.002034 -0.000319447" quat="-0.117828 0.720955 0.171718 0.660949" mass="0.0039563" diaginertia="3.38483e-07 2.76034e-07 1.19132e-07"/>
+        <joint name="left_thumb_joint_0" pos="0 0 0" axis="0 0 1" range="0 1.9129"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_thumb_link_0"/>
+        <body name="left_thumb_link_1" pos="0.0213582 0.00246508 -0.0015001" quat="0.70594 0.70594 0.0406037 0.0406037">
+          <inertial pos="0.0314599 0.00518571 6.24e-05" quat="0.46521 0.462446 0.53165 0.535791" mass="0.01867" diaginertia="7.22352e-06 5.83863e-06 2.69243e-06"/>
+          <joint name="left_thumb_joint_1" pos="0 0 0" axis="0 0 1" range="0 1.5184"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_thumb_link_1"/>
+          <body name="left_thumb_link_2" pos="0.0602896 0.0125 0">
+            <inertial pos="0.0115158 -0.0118042 -0.000244198" quat="0.616789 0.563916 0.411043 0.364162" mass="0.0154514" diaginertia="2.50872e-06 2.35822e-06 1.07641e-06"/>
+            <joint name="left_thumb_joint_2" pos="0 0 0" axis="0 0 1" range="0 2.0944"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_thumb_link_2"/>
+            <body name="left_thumb_tactile_link_0" pos="0.018081 -0.00892245 0" quat="0.416411 -0.571491 -0.416411 -0.571491">
+              <inertial pos="-5.78077e-07 0.00725268 0.00384772" quat="0.484532 0.515087 -0.514929 0.484522" mass="0.00728797" diaginertia="8.02218e-07 6.31336e-07 4.13376e-07"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0 0 0 1" mesh="left_thumb_tactile_link_0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="left_index_link_0" pos="0.030201 -0.0042267 -0.094134" quat="-2.61997e-06 0.713266 -2.57453e-06 -0.700894">
+        <inertial pos="0.0204567 -0.00340393 0.000106772" quat="0.486004 0.490768 0.520205 0.502329" mass="0.00775078" diaginertia="1.3915e-06 1.28745e-06 3.41769e-07"/>
+        <joint name="left_index_joint_0" pos="0 0 0" axis="0 0 1" range="0 1.3962"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_index_link_0"/>
+        <body name="left_index_link_1" pos="0.0439292 -0.00596952 -0.0001">
+          <inertial pos="0.00863638 0.00390729 0.000228124" quat="0.419461 -0.025736 -0.0663203 0.904982" mass="0.00147412" diaginertia="9.67239e-08 7.67034e-08 7.41978e-08"/>
+          <joint name="left_index_joint_1" pos="0 0 0" axis="0 0 1" range="0 1.4242"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_index_link_1"/>
+          <body name="left_index_link_2" pos="0.0167238 0.00913379 0.0001">
+            <inertial pos="0.00876884 -0.00431458 2.53713e-05" quat="0.519496 0.529477 0.471149 0.477281" mass="0.00525268" diaginertia="3.20089e-07 2.8974e-07 1.12028e-07"/>
+            <joint name="left_index_joint_2" pos="0 0 0" axis="0 0 1" range="0 1.3265"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_index_link_2"/>
+            <body name="left_index_tactile_link_0" pos="0.00890093 -0.00221208 0" quat="0.491217 -0.508631 -0.491217 -0.508631">
+              <inertial pos="-7.15639e-06 0.00766632 0.00153147" quat="0.502586 0.498111 -0.496912 0.502366" mass="0.00158521" diaginertia="6.98209e-08 5.42382e-08 3.12125e-08"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0 0 0 1" mesh="left_index_tactile_link_0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="left_middle_link_0" pos="0.010124 -0.0042267 -0.098624" quat="-2.59734e-06 0.707105 -2.59735e-06 -0.707108">
+        <inertial pos="0.0204567 -0.00340392 0.000106768" quat="0.486005 0.490767 0.520206 0.502328" mass="0.00775077" diaginertia="1.39149e-06 1.28744e-06 3.41768e-07"/>
+        <joint name="left_middle_joint_0" pos="0 0 0" axis="0 0 1" range="0 1.3962"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_middle_link_0"/>
+        <body name="left_middle_link_1" pos="0.0439292 -0.00596952 -5e-05">
+          <inertial pos="0.0086363 0.00390718 0.000178199" quat="0.419451 -0.0258131 -0.0664939 0.904971" mass="0.00147412" diaginertia="9.67251e-08 7.67039e-08 7.41989e-08"/>
+          <joint name="left_middle_joint_1" pos="0 0 0" axis="0 0 1" range="0 1.4242"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_middle_link_1"/>
+          <body name="left_middle_link_2" pos="0.0167238 0.00913394 5.00004e-05">
+            <inertial pos="0.0104964 -0.00356221 1.79692e-05" quat="0.5129 0.520016 0.481362 0.48457" mass="0.00350578" diaginertia="2.04845e-07 1.80423e-07 7.56603e-08"/>
+            <joint name="left_middle_joint_2" pos="0 0 0" axis="0 0 1" range="0 1.3265"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_middle_link_2"/>
+            <body name="left_middle_tactile_link_0" pos="0.00890093 -0.00221208 0" quat="0.491217 -0.508631 -0.491217 -0.508631">
+              <inertial pos="-7.15845e-06 0.00766636 0.00153148" quat="0.502584 0.498113 -0.496912 0.502366" mass="0.00158522" diaginertia="6.98212e-08 5.42385e-08 3.12126e-08"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0 0 0 1" mesh="left_middle_tactile_link_0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="left_ring_link_0" pos="-0.010453 -0.0042267 -0.097134" quat="-2.61997e-06 -0.700894 -2.57453e-06 0.713266">
+        <inertial pos="0.0204567 -0.00340394 0.000106728" quat="0.486014 0.490757 0.520213 0.502321" mass="0.00775076" diaginertia="1.39149e-06 1.28744e-06 3.4177e-07"/>
+        <joint name="left_ring_joint_0" pos="0 0 0" axis="0 0 1" range="0 1.3962"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_ring_link_0"/>
+        <body name="left_ring_link_1" pos="0.0439292 -0.00596952 -5e-05">
+          <inertial pos="0.00863656 0.00390668 0.000178233" quat="0.419492 -0.025844 -0.0665635 0.904946" mass="0.00147411" diaginertia="9.67242e-08 7.67039e-08 7.4198e-08"/>
+          <joint name="left_ring_joint_1" pos="0 0 0" axis="0 0 1" range="0 1.4242"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_ring_link_1"/>
+          <body name="left_ring_link_2" pos="0.0167244 0.0091328 5e-05">
+            <inertial pos="0.010496 -0.00356299 1.79693e-05" quat="0.512921 0.520038 0.481339 0.484547" mass="0.00350578" diaginertia="2.04845e-07 1.80423e-07 7.56604e-08"/>
+            <joint name="left_ring_joint_2" pos="0 0 0" axis="0 0 1" range="0 1.3265"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_ring_link_2"/>
+            <body name="left_ring_tactile_link_0" pos="0.0089007 -0.00221269 0" quat="0.491194 -0.508653 -0.491194 -0.508653">
+              <inertial pos="-7.15542e-06 0.00766639 0.00153149" quat="0.502583 0.498114 -0.496912 0.502366" mass="0.00158522" diaginertia="6.98213e-08 5.42388e-08 3.12126e-08"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0 0 0 1" mesh="left_ring_tactile_link_0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="left_pinky_link_0" pos="-0.0302443 -0.00422669 -0.0911468" quat="0 -0.692905 0 0.721029">
+        <inertial pos="0.0204567 -0.00340391 0.000106744" quat="0.486012 0.49076 0.520209 0.502323" mass="0.00775073" diaginertia="1.39148e-06 1.28743e-06 3.41766e-07"/>
+        <joint name="left_pinky_joint_0" pos="0 0 0" axis="0 0 1" range="0 1.3962"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_pinky_link_0"/>
+        <body name="left_pinky_link_1" pos="0.0439292 -0.00596952 -5e-05">
+          <inertial pos="0.00863655 0.00390671 0.000178243" quat="0.419491 -0.0258531 -0.0665827 0.904945" mass="0.00147411" diaginertia="9.67242e-08 7.67039e-08 7.41978e-08"/>
+          <joint name="left_pinky_joint_1" pos="0 0 0" axis="0 0 1" range="0 1.4242"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_pinky_link_1"/>
+          <body name="left_pinky_link_2" pos="0.0167243 0.00913285 5e-05">
+            <inertial pos="0.010496 -0.00356294 1.79745e-05" quat="0.51292 0.520036 0.481341 0.484548" mass="0.00350578" diaginertia="2.04845e-07 1.80423e-07 7.56604e-08"/>
+            <joint name="left_pinky_joint_2" pos="0 0 0" axis="0 0 1" range="0 1.3265"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="left_pinky_link_2"/>
+            <body name="left_pinky_tactile_link_0" pos="0.00890071 -0.00221265 0" quat="0.491196 -0.508651 -0.491196 -0.508651">
+              <inertial pos="-7.14359e-06 0.0076664 0.0015315" quat="0.502583 0.498114 -0.496914 0.502365" mass="0.00158522" diaginertia="6.98213e-08 5.42389e-08 3.12125e-08"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0 0 0 1" mesh="left_pinky_tactile_link_0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>

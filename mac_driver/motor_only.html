@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GMH15 · 电机控制</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f8;--ink:#202d36;--muted:#73818c;--line:#e3e8ed;--teal:#087e80;--red:#c63c42}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1120px;margin:auto;padding:38px 30px 90px}.eyebrow{font-size:12px;letter-spacing:.15em;color:var(--teal);font-weight:700}header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:10px 0 25px}h1{font-size:30px;letter-spacing:-1px;margin:8px 0}p{color:var(--muted);line-height:1.7;margin:5px 0}.badge{border:1px solid var(--line);background:white;padding:9px 13px;border-radius:20px;font-size:12px;white-space:nowrap}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#a9b3bb;margin-right:7px}.online .dot{background:#11a28a}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:17px 20px;background:#fff;border:1px solid var(--line);border-radius:12px}.stat label{display:block;color:var(--muted);font-size:12px;margin-bottom:8px}.stat strong{font-weight:600;font-size:17px}.toolbar{margin:20px 0 12px;padding:18px 20px;background:white;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:18px}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit;font-weight:600;border:1px solid #d9e1e7;border-radius:8px;background:white;color:var(--ink);padding:10px 16px;cursor:pointer;transition:background .15s}button:hover{background:#f1f5f7}button:disabled{opacity:.38;cursor:not-allowed}.primary{background:var(--teal);border-color:var(--teal);color:white}.primary:hover{background:#076a6b}.stop{background:#fff1f0;border-color:#f2c8c7;color:var(--red)}.stop:hover{background:#ffe3e1}.status-text{font-size:12px;max-width:400px}.notice{padding:12px 16px;border-radius:8px;background:#edf4f5;border:1px solid #d6e5e8;color:#3c6470;font-size:12px;line-height:1.6;margin-bottom:20px;word-break:break-word}.notice.error{background:#fff1ef;border-color:#f3ceca;color:#ae3337}.section-title{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}.motors{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.row{display:grid;grid-template-columns:155px 130px minmax(150px,1fr) 122px 80px;gap:20px;align-items:center;padding:22px 24px;border-bottom:1px solid var(--line)}.row:last-child{border:0}.motor-name{font-weight:600;font-size:15px}.motor-name small{display:block;font-size:11px;color:var(--muted);letter-spacing:.09em;font-weight:500;margin-bottom:6px}.reading{font-size:23px;font-variant-numeric:tabular-nums;white-space:nowrap}.reading small{font-size:12px;color:var(--muted);margin-left:3px}.counts{font-size:11px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}.slider-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px}input[type=range]{accent-color:var(--teal);width:100%;cursor:pointer}input[type=number]{width:72px;border:1px solid var(--line);border-radius:6px;padding:8px 5px;text-align:center;font:inherit;font-variant-numeric:tabular-nums}.stepper{display:flex;align-items:center;gap:3px}.stepper button{padding:8px 7px;min-width:25px}.send{font-size:12px;padding:9px 12px}.bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:18px}.bottom p{font-size:12px;max-width:750px}footer{font-size:11px;color:var(--muted);margin-top:26px;display:flex;justify-content:space-between;gap:15px}.danger-text{color:var(--red)}@media(max-width:800px){main{padding:24px 16px 60px}.stats{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:100px 100px 1fr;gap:14px;padding:18px}.row .slider-wrap{grid-column:1/4}.row .stepper{grid-column:2;grid-row:auto}.row .send{grid-column:3}.toolbar,header{align-items:flex-start;flex-direction:column}.bottom{align-items:flex-start;flex-direction:column}h1{font-size:26px}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">GMH15 / MOTOR CONTROL</div>
+<header><div><h1>电机控制</h1><p>7 路电机 · 直接查看反馈，逐个调整位置</p></div><div class="badge" id="connection"><span class="dot"></span><span id="connectionText">正在连接设备</span></div></header>
+<section class="stats" aria-label="设备状态">
+<div class="stat"><label>设备</label><strong id="serial">—</strong></div>
+<div class="stat"><label>电机状态</label><strong id="enabled">—</strong></div>
+<div class="stat"><label>位置初始化</label><strong id="initialized">未初始化</strong></div>
+<div class="stat"><label>故障</label><strong id="faults">—</strong></div>
+</section>
+<section class="toolbar"><div class="actions"><button id="init">① 位置初始化</button><button id="arm" class="primary">② 启用电机</button><button id="stop" class="stop">停止并失能</button></div><p class="status-text" id="session">启动时不使能电机</p></section>
+<div class="notice" id="notice" role="status">等待实时位置反馈。初始化会让手返回初始位置。</div>
+<div class="section-title"><h2>电机位置</h2><span>实际角度 / 编码位置</span></div>
+<section class="motors" id="motors" aria-label="七路电机"></section>
+<div class="bottom"><p>先初始化，再启用。拖动或输入目标后点击「发送」才运动。当前测试范围：四指 0–45°，拇指各 0–30°。离开页面、反馈中断或心跳超时会请求停止。</p><button id="sync">目标同步为当前位置</button></div>
+<footer><span>右手 · 本机 USB 控制</span><span id="freshness">等待设备</span></footer>
+</main>
+<script>
+const axes=[{i:0,f:0,name:'食指',max:45},{i:2,f:3,name:'中指',max:45},{i:4,f:6,name:'无名指',max:45},{i:6,f:9,name:'小指',max:45},{i:8,f:12,name:'拇指 CMC',max:30},{i:9,f:13,name:'拇指 MCP',max:30},{i:10,f:14,name:'拇指 IP',max:30}];
+const $=id=>document.getElementById(id);
+const owner=sessionStorage.motorOwner||(sessionStorage.motorOwner='motor-ui-'+crypto.randomUUID());
+let config=null,frame=null,status=null,owned=false,ready=false,sequence=0,pending=false,dirty=false,command=Array(11).fill(0),networkError='',lastNotice='',polling=false;
+for(const [k,a] of axes.entries()){
+const row=document.createElement('div');row.className='row';row.innerHTML=`<div class="motor-name"><small>MOTOR ${String(k+1).padStart(2,'0')}</small>${a.name}</div><div><div class="reading"><span id="actual-${k}">—</span><small>°</small></div><div class="counts" id="counts-${k}">编码位置 —</div></div><div class="slider-wrap"><div class="slider-label"><span>目标角度</span><span>0–${a.max}°</span></div><input aria-label="${a.name}目标角度滑块" id="range-${k}" type="range" min="0" max="${a.max}" step="0.5" value="0"></div><div class="stepper"><button id="minus-${k}" aria-label="${a.name}减少一度">−</button><input aria-label="${a.name}目标角度" id="number-${k}" type="number" min="0" max="${a.max}" step="0.5" value="0"><button id="plus-${k}" aria-label="${a.name}增加一度">+</button></div><button class="send" id="send-${k}" disabled>发送</button>`;
+$('motors').appendChild(row);
+function set(v){v=Math.round(Math.min(a.max,Math.max(0,Number(v)))*10)/10;if(!Number.isFinite(v))return;command[a.i]=v;$('range-'+k).value=v;$('number-'+k).value=v;dirty=true}
+$('range-'+k).oninput=e=>set(e.target.value);$('number-'+k).onchange=e=>set(e.target.value);$('minus-'+k).onclick=()=>set(command[a.i]-1);$('plus-'+k).onclick=()=>set(command[a.i]+1);
+$('send-'+k).onclick=()=>sendAxis(k);
+}
+function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error)}
+function sync(){if(!frame?.joints_degrees?.length)return;for(const [k,a]of axes.entries()){command[a.i]=Math.max(0,Math.min(a.max,frame.joints_degrees[a.f]));$('range-'+k).value=command[a.i];$('number-'+k).value=command[a.i].toFixed(1)}dirty=false}
+async function post(action,extra={},keepalive=false){if(!config)throw Error('尚未连接服务');const response=await fetch('/api/teleop',{method:'POST',headers:{'Content-Type':'application/json','X-Teleop-Token':config.token},body:JSON.stringify({action,side:'right',owner,...extra}),keepalive});const result=await response.json();if(!response.ok||!result.accepted)throw Error(result.error||'操作未被接受');return result}
+async function action(fn){if(pending)return;pending=true;render();try{await fn()}catch(e){notice(e.message,true)}finally{pending=false;render()}}
+async function stop(){owned=false;try{await post('stop',{},true)}catch(e){notice('停止请求未确认：'+e.message,true)}await poll()}
+function maySend(){return ready&&owned&&status?.active&&!pending}
+async function sendAxis(k){if(!maySend())return;const target=Array.isArray(status.target_degrees)?status.target_degrees.slice():Array(11).fill(0);if(!Array.isArray(status.target_degrees))for(const a of axes)target[a.i]=frame.joints_degrees[a.f];target[axes[k].i]=command[axes[k].i];await action(async()=>{await post('target',{control_enabled:true,sequence:++sequence,angles_degrees:target});notice(axes[k].name+'：目标已发送，等待实际位置反馈')})}
+$('init').onclick=()=>action(async()=>{await post('initialize',{confirm_initialization:true});notice('位置初始化进行中，请看实际反馈…')});
+$('arm').onclick=()=>action(async()=>{await post('arm',{control_enabled:true});await poll();notice('正在启用，等待设备确认…')});
+$('stop').onclick=stop;$('sync').onclick=sync;
+function render(){
+const fresh=!networkError&&frame&&frame.connected&&frame.age_ms<450&&!frame.joint_error&&frame.joints_degrees?.length===15;
+ready=Boolean(fresh&&!frame.device_diagnostics?.faults?.length);const wasOwned=owned;owned=Boolean(status?.active&&status.owner===owner);const other=status?.active&&!owned;
+$('connection').classList.toggle('online',Boolean(fresh));$('connectionText').textContent=fresh?'实时连接':frame?'反馈中断':'正在连接设备';$('serial').textContent=frame?.sn||'—';$('enabled').textContent=frame?.motor_enabled?'已使能':frame?'未使能':'—';$('enabled').classList.toggle('danger-text',Boolean(frame?.motor_enabled));$('initialized').textContent=status?.initializing?'初始化中…':status?.last_init_result===1?'已完成':status?.last_init_result===0?'初始化失败':'未初始化';const faults=frame?.device_diagnostics?.faults||[];$('faults').textContent=faults.length?`${faults.length} 项故障`:frame?'无故障':'—';$('faults').classList.toggle('danger-text',Boolean(faults.length));
+$('session').textContent=other?'另一个程序正在控制':owned?'当前页面正在控制 · 心跳保持中':status?.initializing?'等待初始化结果':status?.reason||'启动时不使能电机';$('freshness').textContent=frame?`反馈间隔 ${frame.age_ms} ms · ${Number(frame.sample_hz||0).toFixed(1)} Hz`:'等待设备';
+$('init').disabled=!ready||pending||Boolean(status?.active||status?.initializing||frame?.motor_enabled)||config?.motion_locked;
+$('arm').disabled=!ready||pending||status?.last_init_result!==1||Boolean(status?.active||status?.initializing||frame?.motor_enabled)||config?.motion_locked;
+$('stop').disabled=!config;
+for(const[k,a]of axes.entries()){$('actual-'+k).textContent=frame?.joints_degrees?.length===15?Number(frame.joints_degrees[a.f]).toFixed(1):'—';$('counts-'+k).textContent='编码位置 '+(frame?.motor_positions?.[k]??'—');$('send-'+k).disabled=!maySend();for(const id of ['range-','number-','minus-','plus-'])$(id+k).disabled=!ready||other||pending}
+if(!dirty&&frame)sync();
+const error=networkError||(!fresh&&frame?'设备反馈已中断，请停止控制并检查连接':'')||status?.error||frame?.error;
+if(error){if(error!==lastNotice)notice(error,true);lastNotice=error}else if(lastNotice){notice(status?.last_init_result===1?'初始化已完成，可以启用电机。':'位置反馈正常。先初始化，再启用电机。');lastNotice=''}
+if(wasOwned&&(!fresh||!status?.active))post('stop',{},true).catch(()=>{});
+}
+async function poll(){if(polling)return;polling=true;try{const response=await fetch('/api/state',{cache:'no-store',signal:AbortSignal.timeout(1500)});if(!response.ok)throw Error('服务连接失败');const data=await response.json();frame=data.hands.right;status=data.teleop.right;networkError='';render()}catch(e){networkError='无法获取实时反馈：'+e.message;ready=false;render();if(owned)post('stop',{},true).catch(()=>{})}finally{polling=false}}
+setInterval(()=>{if(owned&&ready&&document.visibilityState==='visible')post('heartbeat',{control_enabled:true}).catch(()=>{ready=false;notice('心跳失败，已请求停止',true);stop()})},150);
+setInterval(poll,200);
+function leave(){if(owned){owned=false;post('stop',{},true).catch(()=>{})}}
+window.addEventListener('pagehide',leave);window.addEventListener('blur',leave);document.addEventListener('visibilitychange',()=>{if(document.hidden)leave()});
+(async()=>{try{const r=await fetch('/api/teleop/config');if(!r.ok)throw Error('无法读取服务配置');config=await r.json();await poll()}catch(e){notice(e.message,true)}})();
+</script></body></html>

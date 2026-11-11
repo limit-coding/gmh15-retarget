@@ -1,0 +1,24 @@
+{
+  "side": "right",
+  "nq": 15,
+  "nv": 15,
+  "nu": 0,
+  "joints": [
+    "right_thumb_joint_0",
+    "right_thumb_joint_1",
+    "right_thumb_joint_2",
+    "right_index_joint_0",
+    "right_index_joint_1",
+    "right_index_joint_2",
+    "right_middle_joint_0",
+    "right_middle_joint_1",
+    "right_middle_joint_2",
+    "right_ring_joint_0",
+    "right_ring_joint_1",
+    "right_ring_joint_2",
+    "right_pinky_joint_0",
+    "right_pinky_joint_1",
+    "right_pinky_joint_2"
+  ],
+  "source": "/opt/vendor/DexH15_right_urdf_P/DexH15_right_urdf/urdf/DexH15_right_urdf.urdf"
+}

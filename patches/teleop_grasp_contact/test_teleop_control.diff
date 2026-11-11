@@ -1,0 +1,46 @@
+--- test_teleop_control.orig.py	2026-11-06 04:02:02
++++ test_teleop_control.py	2026-11-06 04:02:54
+@@ -119,4 +119,43 @@
+         self.assertEqual(proxy.write_counts,{'initMotorPosition':1})
+         with self.assertRaises(RuntimeError):proxy.calibrateSensor(1)
+ 
++class GraspTests(ControlTests):
++    """Contact-aware tracking: a blocked finger in contact holds instead of disabling."""
++    def setUp(self):
++        super().setUp()
++        self.frame['fingers']=[dict(key=k,force=[0.,0.,.7 if k=='thumb' else .1]) for k in ('index','middle','ring','pinky','thumb')]
++    def force(self,key,n):
++        for f in self.frame['fingers']:
++            if f['key']==key:f['force']=[0.,0.,n]
++    def run_ticks(self,n):
++        for _ in range(n):self.advance();self.ctrl.heartbeat(OWNER);self.ctrl.tick(self.frame)
++    def close_index(self,deg=40):
++        target=self.ctrl.target[:];target[0]=deg;self.ctrl.set_target(OWNER,1,target)
++    def test_blocked_without_contact_still_disables(self):
++        self.arm();self.close_index();self.run_ticks(20)   # measured index stays 0
++        self.assertFalse(self.ctrl.active);self.assertFalse(self.hand.enabled)
++    def test_blocked_with_contact_holds_and_bounds_lead(self):
++        self.arm();self.close_index();self.run_ticks(5);self.force('index',2.);self.run_ticks(40)
++        self.assertTrue(self.ctrl.active,self.ctrl.error);self.assertTrue(self.hand.enabled)
++        self.assertLessEqual(self.ctrl.sent[0],6.+1e-9);self.assertIn(0,self.ctrl.status()['grasp_contact'])
++    def test_contact_cap_follows_measured_angle(self):
++        self.frame['joints_degrees'][0]=20.;self.arm();self.close_index();self.force('index',2.);self.run_ticks(60)
++        self.assertTrue(self.ctrl.active,self.ctrl.error);self.assertAlmostEqual(self.ctrl.sent[0],26.)
++    def test_opening_not_restricted_in_contact(self):
++        self.frame['joints_degrees'][0]=20.;self.arm();self.force('index',2.);self.ctrl.sent[0]=24.
++        target=self.ctrl.target[:];target[0]=0.;self.ctrl.set_target(OWNER,1,target)
++        self.run_ticks(1);self.assertLess(self.ctrl.sent[0],24.)
++    def test_high_force_stops_further_closing(self):
++        self.arm();self.close_index();self.force('index',2.);self.run_ticks(3);held=self.ctrl.sent[0]
++        self.force('index',20.);self.run_ticks(10)
++        self.assertTrue(self.ctrl.active);self.assertLessEqual(self.ctrl.sent[0],held+1e-9)
++    def test_resting_thumb_force_is_baseline_not_contact(self):
++        self.arm();self.run_ticks(2);self.assertEqual(self.ctrl.status()['grasp_contact'],{})
++    def test_contact_on_other_finger_does_not_shield_index(self):
++        self.arm();self.close_index();self.force('middle',3.);self.run_ticks(20)
++        self.assertFalse(self.ctrl.active)
++    def test_missing_tactile_falls_back_to_original_rule(self):
++        del self.frame['fingers'];self.arm();self.close_index();self.run_ticks(20)
++        self.assertFalse(self.ctrl.active)
++
+ if __name__=='__main__':unittest.main(verbosity=2)

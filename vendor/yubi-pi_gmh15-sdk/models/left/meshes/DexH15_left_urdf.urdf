@@ -1,0 +1,1237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="DexH15_left_urdf">
+  <link
+    name="left_palm_link">
+    <inertial>
+      <origin
+        xyz="-0.000224527561288826 0.00158307933540662 -0.0214840283300513"
+        rpy="0 0 0" />
+      <mass
+        value="0.138023316328305" />
+      <inertia
+        ixx="0.00010441363157202"
+        ixy="7.84508741395596E-07"
+        ixz="7.49593125316604E-07"
+        iyy="0.000156427337479679"
+        iyz="-8.26348519891999E-06"
+        izz="9.45151976134503E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_palm_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.929411764705882 0.705882352941176 0.568627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_palm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="left_index_camera_link_0">
+    <inertial>
+      <origin
+        xyz="-0.0345309373292912 -0.00144236772036107 0.0139433504314649"
+        rpy="0 0 0" />
+      <mass
+        value="0.000654042467848702" />
+      <inertia
+        ixx="9.12315073908897E-09"
+        ixy="-3.85978231875402E-22"
+        ixz="-3.87386873734493E-22"
+        iyy="9.51567345982665E-09"
+        iyz="1.59008576074093E-09"
+        izz="1.10027887776177E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_camera_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_camera_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_index_camera_joint_0"
+    type="fixed">
+    <origin
+      xyz="0.03001849248823 -0.01832669382602 -0.017807888949226"
+      rpy="3.14159265358979 0 0" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_index_camera_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_thumb_link_0">
+    <inertial>
+      <origin
+        xyz="0.00886190592400368 -0.00203400290112155 -0.000319447367067315"
+        rpy="0 0 0" />
+      <mass
+        value="0.00395630335895201" />
+      <inertia
+        ixx="1.45654128977515E-07"
+        ixy="-5.64417822654374E-08"
+        ixz="1.82838410760135E-08"
+        iyy="2.5184523636244E-07"
+        iyz="1.18338554507999E-08"
+        izz="3.36149981771904E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_thumb_joint_0"
+    type="revolute">
+    <origin
+      xyz="0.030018 -0.018327 -0.017808"
+      rpy="3.1416 0 0" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_thumb_link_0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.9129"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_thumb_link_1">
+    <inertial>
+      <origin
+        xyz="0.0314598532944025 0.00518571088036306 6.24000457684279E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0186700386421083" />
+      <inertia
+        ixx="2.78068751676717E-06"
+        ixy="-6.25632820068549E-07"
+        ixz="-2.19324671389508E-08"
+        iyy="7.1354171072541E-06"
+        iyz="-1.84133130210875E-09"
+        izz="5.83847795078633E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_thumb_joint_1"
+    type="revolute">
+    <origin
+      xyz="0.0213582162736342 0.00246508447013965 -0.00150009683382987"
+      rpy="1.5707963267949 0 0.114907789219488" />
+    <parent
+      link="left_thumb_link_0" />
+    <child
+      link="left_thumb_link_1" />
+    <axis
+      xyz="0 0 0.999999999999996" />
+    <limit
+      lower="0"
+      upper="1.5184"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_thumb_link_2">
+    <inertial>
+      <origin
+        xyz="0.0115158413080773 -0.0118042467238058 -0.000244197665490851"
+        rpy="0 0 0" />
+      <mass
+        value="0.015451379991269" />
+      <inertia
+        ixx="1.30225686518134E-06"
+        ixy="5.2068665233815E-07"
+        ixz="-3.64416529159111E-08"
+        iyy="2.28234852593261E-06"
+        iyz="1.41145553666713E-11"
+        izz="2.35874397775107E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_thumb_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.0602895552108653 0.0124999999999762 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_thumb_link_1" />
+    <child
+      link="left_thumb_link_2" />
+    <axis
+      xyz="0 0 0.999999999999996" />
+    <limit
+      lower="0"
+      upper="2.0944"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_thumb_tactile_link_0">
+    <inertial>
+      <origin
+        xyz="-5.78077314935047E-07 0.00725268176877747 0.00384771731961831"
+        rpy="0 0 0" />
+      <mass
+        value="0.00728796921833148" />
+      <inertia
+        ixx="6.31336153673872E-07"
+        ixy="2.93222685321651E-11"
+        ixz="3.15221829171601E-11"
+        iyy="4.14819918339156E-07"
+        iyz="-2.36494153433172E-08"
+        izz="8.00774477654966E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_tactile_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_thumb_tactile_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_thumb_tactile_joint_0"
+    type="fixed">
+    <origin
+      xyz="0.0180809955600047 -0.00892245083780965 0"
+      rpy="1.16590454050981 -1.57079631189374 -3.0481158724312" />
+    <parent
+      link="left_thumb_link_2" />
+    <child
+      link="left_thumb_tactile_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_index_link_0">
+    <inertial>
+      <origin
+        xyz="0.0204566759048482 -0.00340392796790297 0.000106772385285211"
+        rpy="0 0 0" />
+      <mass
+        value="0.00775077740728454" />
+      <inertia
+        ixx="3.44451476870945E-07"
+        ixy="-4.78354768283327E-08"
+        ixz="2.17194999011832E-08"
+        iyy="1.38929483134256E-06"
+        iyz="-3.19576191697703E-10"
+        izz="1.28696816579278E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_index_joint_0"
+    type="revolute">
+    <origin
+      xyz="0.030201 -0.0042267 -0.094134"
+      rpy="3.1416 1.5533 0" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_index_link_0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3962"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_index_link_1">
+    <inertial>
+      <origin
+        xyz="0.00863637835336946 0.00390728796933644 0.00022812438552915"
+        rpy="0 0 0" />
+      <mass
+        value="0.00147411538103135" />
+      <inertia
+        ixx="8.50523649205121E-08"
+        ixy="-9.90027735639069E-09"
+        ixz="1.360744834463E-10"
+        iyy="8.83229560348037E-08"
+        iyz="3.82289631659958E-10"
+        izz="7.42498077305066E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_index_joint_1"
+    type="revolute">
+    <origin
+      xyz="0.04392915363646 -0.005969523805632 -9.99999999999925E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_index_link_0" />
+    <child
+      link="left_index_link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.4242"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_index_link_2">
+    <inertial>
+      <origin
+        xyz="0.00876883740153682 -0.00431458381008099 2.53712887969514E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.005252676301425" />
+      <inertia
+        ixx="1.14128982575059E-07"
+        ixy="2.07811239731582E-08"
+        ixz="8.71385135074927E-10"
+        iyy="3.17984260602417E-07"
+        iyz="3.96988691665183E-10"
+        izz="2.89743910907443E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_index_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.0167238384567498 0.00913378726174574 9.99999999999959E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_index_link_1" />
+    <child
+      link="left_index_link_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3265"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_index_tactile_link_0">
+    <inertial>
+      <origin
+        xyz="-7.15639129139981E-06 0.00766631875010511 0.00153146885589252"
+        rpy="0 0 0" />
+      <mass
+        value="0.00158520992402904" />
+      <inertia
+        ixx="5.42381925578706E-08"
+        ixy="2.29314385505891E-11"
+        ixz="2.18195244823304E-11"
+        iyy="3.12163534275782E-08"
+        iyz="3.83299582470554E-10"
+        izz="6.98170364019621E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_tactile_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_index_tactile_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_index_tactile_joint_0"
+    type="fixed">
+    <origin
+      xyz="0.00890093470302482 -0.00221208366030078 0"
+      rpy="-0.209440026514175 -1.57079630572147 -1.39618505518417" />
+    <parent
+      link="left_index_link_2" />
+    <child
+      link="left_index_tactile_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_middle_link_0">
+    <inertial>
+      <origin
+        xyz="0.0204566843404468 -0.00340391868913875 0.000106768367714546"
+        rpy="0 0 0" />
+      <mass
+        value="0.00775077114830107" />
+      <inertia
+        ixx="3.44450484584185E-07"
+        ixy="-4.78341328337178E-08"
+        ixz="2.17188635148522E-08"
+        iyy="1.38929048262302E-06"
+        iyz="-3.19908504195602E-10"
+        izz="1.28696329179596E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_middle_joint_0"
+    type="revolute">
+    <origin
+      xyz="0.010124 -0.0042267 -0.098624"
+      rpy="3.1416 1.5708 0" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_middle_link_0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3962"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_middle_link_1">
+    <inertial>
+      <origin
+        xyz="0.00863630329429653 0.00390717697250072 0.000178198821438267"
+        rpy="0 0 0" />
+      <mass
+        value="0.00147412457646992" />
+      <inertia
+        ixx="8.50531857082762E-08"
+        ixy="-9.90080938380614E-09"
+        ixz="1.36620691896439E-10"
+        iyy="8.83234859795491E-08"
+        iyz="3.82911990898269E-10"
+        izz="7.42511592135602E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_middle_joint_1"
+    type="revolute">
+    <origin
+      xyz="0.04392915363646 -0.005969523805632 -5.00000000000014E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_middle_link_0" />
+    <child
+      link="left_middle_link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.4242"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_middle_link_2">
+    <inertial>
+      <origin
+        xyz="0.0104963648190131 -0.00356220705840366 1.79692073175742E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.00350577686542458" />
+      <inertia
+        ixx="7.62409548221202E-08"
+        ixy="8.62719579764757E-09"
+        ixz="4.61196647645369E-10"
+        iyy="2.04263268771956E-07"
+        iyz="2.18411648477994E-10"
+        izz="1.80423307137445E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_middle_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.016723753369016 0.00913394305449331 5.00004041466481E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_middle_link_1" />
+    <child
+      link="left_middle_link_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3265"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_middle_tactile_link_0">
+    <inertial>
+      <origin
+        xyz="-7.15844607341622E-06 0.00766635884219313 0.00153148014341381"
+        rpy="0 0 0" />
+      <mass
+        value="0.00158521558034911" />
+      <inertia
+        ixx="5.42385291304753E-08"
+        ixy="2.30172330666832E-11"
+        ixz="2.18046948187613E-11"
+        iyy="3.12164225504677E-08"
+        iyz="3.83172825410139E-10"
+        izz="6.98173241973119E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_tactile_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_middle_tactile_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_middle_tactile_joint_0"
+    type="fixed">
+    <origin
+
+      xyz="0.00890093470302482 -0.00221208366030078 0"
+      rpy="-0.209440026514175 -1.57079630572147 -1.39618505518417" />
+
+    <parent
+      link="left_middle_link_2" />
+    <child
+      link="left_middle_tactile_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_ring_link_0">
+    <inertial>
+      <origin
+        xyz="0.0204566799094852 -0.00340394110598915 0.000106728030791091"
+        rpy="0 0 0" />
+      <mass
+        value="0.00775076085736334" />
+      <inertia
+        ixx="3.44452724587101E-07"
+        ixy="-4.78355554817442E-08"
+        ixz="2.17143080175849E-08"
+        iyy="1.38929120760948E-06"
+        iyz="-3.23578169779354E-10"
+        izz="1.28696060487313E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_ring_joint_0"
+    type="revolute">
+    <origin
+      xyz="-0.010453 -0.0042267 -0.097134"
+      rpy="0 1.5533 3.1416" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_ring_link_0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3962"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_ring_link_1">
+    <inertial>
+      <origin
+        xyz="0.00863656473844775 0.00390667648276935 0.000178232806539416"
+        rpy="0 0 0" />
+      <mass
+        value="0.0014741131075788" />
+      <inertia
+        ixx="8.50509302188356E-08"
+        ixy="-9.90009590017202E-09"
+        ixz="1.36906888194624E-10"
+        iyy="8.83248382793323E-08"
+        iyz="3.8338680560416E-10"
+        izz="7.42503757420285E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_ring_joint_1"
+    type="revolute">
+    <origin
+      xyz="0.04392915363646 -0.005969523805632 -4.99999999999962E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_ring_link_0" />
+    <child
+      link="left_ring_link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.4242"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_ring_link_2">
+    <inertial>
+      <origin
+        xyz="0.0104959877037091 -0.00356299090961758 1.79692717223665E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.00350578304499802" />
+      <inertia
+        ixx="7.62425962047337E-08"
+        ixy="8.6385768518345E-09"
+        ixz="4.61267449615145E-10"
+        iyy="2.04262133127794E-07"
+        iyz="2.18350852185257E-10"
+        izz="1.80423783141213E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_ring_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.0167243755033895 0.00913280386803666 4.99999999999997E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_ring_link_1" />
+    <child
+      link="left_ring_link_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3265"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_ring_tactile_link_0">
+    <inertial>
+      <origin
+        xyz="-7.15541671762743E-06 0.00766639156198312 0.00153149157651967"
+        rpy="0 0 0" />
+      <mass
+        value="0.00158521916302358" />
+      <inertia
+        ixx="5.42387930699269E-08"
+        ixy="2.30550121512106E-11"
+        ixz="2.18004637932601E-11"
+        iyy="3.12164460613495E-08"
+        iyz="3.83037594481985E-10"
+        izz="6.98175063378475E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_tactile_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_ring_tactile_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_ring_tactile_joint_0"
+    type="fixed">
+    <origin
+      xyz="0.0089007023596345 -0.00221269147396499 0"
+      rpy="-0.209508596064922 -1.57079631189374 -1.39620674492064" />
+    <parent
+      link="left_ring_link_2" />
+    <child
+      link="left_ring_tactile_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_pinky_link_0">
+    <inertial>
+      <origin
+        xyz="0.0204567127384005 -0.0034039131860276 0.000106743859423136"
+        rpy="0 0 0" />
+      <mass
+        value="0.00775072844348533" />
+      <inertia
+        ixx="3.44448176446781E-07"
+        ixy="-4.78315002665733E-08"
+        ixz="2.17135671842384E-08"
+        iyy="1.38928021700541E-06"
+        iyz="-3.2256933391953E-10"
+        izz="1.28694894767849E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_pinky_joint_0"
+    type="revolute">
+    <origin
+      xyz="-0.03024425117588 -0.00422669382602999 -0.091146782918886"
+      rpy="0 1.53101985492608 3.14159265358979" />
+    <parent
+      link="left_palm_link" />
+    <child
+      link="left_pinky_link_0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3962"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_pinky_link_1">
+    <inertial>
+      <origin
+        xyz="0.00863655350828611 0.0039067127925473 0.000178243368767029"
+        rpy="0 0 0" />
+      <mass
+        value="0.00147411219977373" />
+      <inertia
+        ixx="8.50508776599289E-08"
+        ixy="-9.90010875713495E-09"
+        ixz="1.37001987854559E-10"
+        iyy="8.83246994146833E-08"
+        iyz="3.834493370159E-10"
+        izz="7.4250258388128E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_pinky_joint_1"
+    type="revolute">
+    <origin
+      xyz="0.04392915363646 -0.005969523805632 -4.99999999999876E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_pinky_link_0" />
+    <child
+      link="left_pinky_link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.4242"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_pinky_link_2">
+    <inertial>
+      <origin
+        xyz="0.010496004344598 -0.0035629424333673 1.79745010169333E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.00350578109895467" />
+      <inertia
+        ixx="7.62424753073408E-08"
+        ixy="8.63788001413348E-09"
+        ixz="4.61254523164678E-10"
+        iyy="2.04262171107546E-07"
+        iyz="2.18346092511805E-10"
+        izz="1.80423859081012E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_pinky_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.0167243485647923 0.00913285319895867 4.99999999999945E-05"
+      rpy="0 0 0" />
+    <parent
+      link="left_pinky_link_1" />
+    <child
+      link="left_pinky_link_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1.3265"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_pinky_tactile_link_0">
+    <inertial>
+      <origin
+        xyz="-7.14358971995455E-06 0.00766640462962512 0.00153149665580644"
+        rpy="0 0 0" />
+      <mass
+        value="0.00158521629715875" />
+      <inertia
+        ixx="5.42388591160837E-08"
+        ixy="2.30039380728861E-11"
+        ixz="2.17969870089367E-11"
+        iyy="3.12163701243537E-08"
+        iyz="3.8293793025905E-10"
+        izz="6.98174651358071E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_tactile_link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://DexH15_left_urdf/meshes/left_pinky_tactile_link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_pinky_tactile_joint_0"
+    type="fixed">
+    <origin
+      xyz="0.00890071232397469 -0.00221265139133513 0"
+      rpy="-0.209508592020271 -1.57079630572147 -1.39619987514526" />
+    <parent
+      link="left_pinky_link_2" />
+    <child
+      link="left_pinky_tactile_link_0" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

@@ -1,0 +1,37 @@
+# Local Python environments and generated caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Machine-specific settings and credentials
+.DS_Store
+._*
+.claude/
+.idea/
+.vscode/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Recordings, diagnostics and old workspace copies stay local
+/runs/*
+!/runs/.gitkeep
+!/runs/mac_driver/
+/runs/mac_driver/*
+!/runs/mac_driver/.gitkeep
+/backups/
+*.log
+
+# Large SDK installers and duplicate CAD exports
+*.zip
+*.rar
+*.deb
+*.crdownload
+/vendor/vendor_urdf_rar/

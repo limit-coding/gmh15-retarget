@@ -1,0 +1,7 @@
+{
+  "_comment": "MODEL-ONLY candidate from tools/pinch_search.py on the vendor URDF (PIP held at 0, pad-centroid distance 4.6 mm). NOT verified on hardware. Requires widening thumb ranges far beyond what has been tested (thumb <=30 deg so far). Jog to this pose slowly in the teleop UI, adjust until pads touch, then copy measured values into gmh15_right.json.",
+  "ranges_deg": {"0": [0, 80], "2": [0, 80], "4": [0, 80], "6": [0, 80], "8": [0, 90], "9": [0, 60], "10": [0, 40]},
+  "pinch_pose_deg": {"0": 80.0, "8": 83.5, "9": 53.8, "10": 31.9},
+  "pinch_blend_start": 0.5,
+  "pinch_blend_full": 1.0
+}

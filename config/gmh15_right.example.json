@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy to gmh15_right.json and edit. ranges_deg keys are command indices (0 idx MCP, 2 mid MCP, 4 ring MCP, 6 little MCP, 8 thumb CMC, 9 thumb MCP, 10 thumb IP). Defaults = angles already commanded on the real right hand without faults. pinch_pose_deg must be MEASURED on the real hand (jog thumb+index tips into contact in the teleop UI, read joints_degrees); leave null until then.",
+  "ranges_deg": {"0": [0, 45], "2": [0, 45], "4": [0, 45], "6": [0, 45], "8": [0, 30], "9": [0, 30], "10": [0, 30]},
+  "pinch_pose_deg": null,
+  "pinch_blend_start": 0.5,
+  "pinch_blend_full": 1.0
+}

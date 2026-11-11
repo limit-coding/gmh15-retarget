@@ -1,0 +1,7 @@
+numpy>=1.24
+opencv-python>=4.8
+mediapipe>=0.10.14   # live tracking only; core + tests run without it
+matplotlib           # optional: replay --plot
+pytest               # tests
+scipy>=1.10         # pinch-pose search on the URDF model
+mujoco>=3.2          # sim view

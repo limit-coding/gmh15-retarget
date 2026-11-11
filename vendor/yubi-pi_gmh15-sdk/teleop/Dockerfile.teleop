@@ -1,0 +1,2 @@
+FROM gmh15-media:3.9.0
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pil && rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,28 @@
+GMH15 SDK 3.9.0
+目标设备: GMH15 左手，SN H15L49G00062
+树莓派: gripette / limit@10.47.253.224
+
+安装目录: /home/limit/gmh15-sdk
+独立环境: Docker 镜像 gmh15-sdk:3.9.0，基于 Ubuntu 22.04 ARM64。
+原因: 树莓派是 Debian 12 / Python 3.11；官方 SDK 包依赖 Ubuntu 22.04 库版本及 Python 3.10。
+
+验证 SDK 加载（不映射硬件）:
+  /home/limit/gmh15-sdk/status.sh --sdk-check
+
+单次 USB 状态读取（先停止触觉采集；默认通过左手 USB by-path 路径定位串口）:
+  /home/limit/gmh15-sdk/status.sh
+也可明确指定端口:
+  /home/limit/gmh15-sdk/status.sh /dev/ttyACM0
+
+该入口仅传入一个串口设备，无网络、不自动重试、不常驻。
+只调用 USB 连接、SN、左右手、在线状态、运行状态、电机使能状态、控制模式和故障码读取接口。
+SN 不匹配或手型不是 LEFT_HAND 会停止后续查询。
+不调用位置初始化、使能/失能、清故障、标定、目标位置、电流或速度、动作、固件升级接口。
+官方 open_usb_device 示例包含 initMotorPosition，不能直接作为只读检查运行。
+
+构建记录: /home/limit/gmh15-sdk/evidence/build.log
+右手已接入: H15R49G00039 / RIGHT_HAND，当前 /dev/ttyACM1。
+双手 USB 控制器序列号相同，by-id 名称会冲突，因此用 by-path 定位并用设备真实 SN 校验。
+当前实时采集是双手版本，共654个原始测点；详见 实时触觉使用说明.txt。
+只读程序源码: status_readonly.py
+USB 未枚举时先检查独立电源、USB 数据线、连接的树莓派和端口。

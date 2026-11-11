@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>GMH15 灵巧手指尖工作空间</title>
+<style>
+  :root { --bg:#fafafa; --fg:#222; --mute:#777; --line:#ddd; }
+  body { margin:0; font:14px/1.5 -apple-system, "PingFang SC", sans-serif; color:var(--fg); background:var(--bg); }
+  header { padding:12px 20px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0 0 4px; }
+  header p { margin:0; color:var(--mute); font-size:13px; }
+  main { display:flex; gap:16px; padding:16px 20px; flex-wrap:wrap; }
+  #left { flex:0 0 640px; }
+  #right { flex:1 1 480px; min-width:420px; }
+  canvas { background:#fff; border:1px solid var(--line); border-radius:6px; cursor:grab; display:block; }
+  .bar { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .bar button { border:1px solid var(--line); background:#fff; border-radius:4px; padding:4px 10px; cursor:pointer; font-size:13px; }
+  .bar button.on { background:#222; color:#fff; border-color:#222; }
+  .legend span { display:inline-flex; align-items:center; margin-right:12px; font-size:13px; }
+  .legend i { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:4px; }
+  table { border-collapse:collapse; width:100%; font-size:13px; background:#fff; }
+  th, td { border:1px solid var(--line); padding:5px 7px; text-align:left; vertical-align:top; }
+  th { background:#f0f0f0; }
+  td.ok { background:#e8f5e9; } td.bad { background:#fdecea; } td.mid { background:#fff8e1; }
+  small { color:var(--mute); }
+  h2 { font-size:15px; margin:16px 0 6px; }
+  .note { color:var(--mute); font-size:12px; margin-top:6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GMH15 右手：指尖能到哪里（基于厂家 URDF 的运动学仿真）</h1>
+  <p>每个点是一个可达的指腹中心。拖动旋转，滚轮缩放。点击下方按钮切换四种情况。只是模型结果，没有在真机上验证。</p>
+</header>
+<main>
+  <div id="left">
+    <div class="bar" id="regimes"></div>
+    <div class="bar" id="views"></div>
+    <canvas id="cv" width="640" height="560"></canvas>
+    <div class="legend" id="legend" style="margin-top:6px"></div>
+    <div class="note" id="info"></div>
+  </div>
+  <div id="right">
+    <h2>工作空间大小</h2>
+    <div id="ws"></div>
+    <h2>任务能不能做</h2>
+    <div id="tasks"></div>
+    <div class="note">
+      A：把 URDF 的 15 个关节当成都能单独控制（实际做不到）。<br>
+      B / C：实际是 7 个电机，每根手指 1 个电机经腱带动 3 个关节。腱怎么分配角度还没测，B 和 C 是两种猜测，真实情况是类似的一条曲线。<br>
+      D：现在 teleop 服务器允许的范围（手指 ≤45° 且 PIP=0，拇指各关节 ≤30°）。<br>
+      “碰到”：两个指腹中心相距 ≤10 mm；“相对”：两指腹法线夹角 ≥120°（能夹住东西）。
+    </div>
+  </div>
+</main>
+<script>
+const D = /*__DATA__*/null;
+const RN = D.summary.regimes;
+let regime = "B", view = "cloud";
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+let yaw = -0.9, pitch = 0.35, zoom = 2.3;
+const center = [50, 0, -90];
+
+function btns(id, items, get, set) {
+  const el = document.getElementById(id); el.innerHTML = "";
+  for (const [k, label] of items) {
+    const b = document.createElement("button"); b.textContent = label;
+    if (get() === k) b.className = "on";
+    b.onclick = () => { set(k); btns(id, items, get, set); draw(); };
+    el.appendChild(b);
+  }
+}
+function viewItems() {
+  const v = [["cloud", "可达范围"]];
+  for (const f of ["index", "middle", "ring", "pinky"]) v.push([f, "拇指–" + D.cn[f] + " 最佳对捏"]);
+  return v;
+}
+btns("regimes", Object.entries(RN), () => regime, k => regime = k);
+btns("views", viewItems(), () => view, k => view = k);
+document.getElementById("legend").innerHTML =
+  Object.entries(D.colors).map(([f, c]) => `<span><i style="background:${c}"></i>${D.cn[f]}</span>`).join("");
+
+function proj(p) {
+  // palm frame: fingers point -z, thumb on +x. Rotate for display: show z as up-ish.
+  let x = p[0] - center[0], y = p[1] - center[1], z = p[2] - center[2];
+  let X = Math.cos(yaw) * x - Math.sin(yaw) * y, Y = Math.sin(yaw) * x + Math.cos(yaw) * y;
+  let Z = z;
+  let Y2 = Math.cos(pitch) * Y - Math.sin(pitch) * Z, Z2 = Math.sin(pitch) * Y + Math.cos(pitch) * Z;
+  return [cv.width / 2 + X * zoom, cv.height / 2 - Z2 * zoom, Y2];
+}
+function hexA(c, a) { const n = parseInt(c.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
+
+function drawSkel(sk, lw, alpha) {
+  for (const [f, L] of Object.entries(sk)) {
+    ctx.strokeStyle = hexA(view === "cloud" ? "#333333" : D.colors[f], alpha); ctx.lineWidth = lw;
+    ctx.beginPath();
+    L.forEach((p, i) => { const q = proj(p); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
+    ctx.stroke();
+    for (const p of L) { const q = proj(p); ctx.fillStyle = hexA("#333333", alpha); ctx.fillRect(q[0] - 2, q[1] - 2, 4, 4); }
+  }
+}
+function axes() {
+  const o = [0, 0, 0], ax = [[[40, 0, 0], "x(拇指侧)"], [[0, 40, 0], "y(掌心)"], [[0, 0, -40], "-z(指尖方向)"]];
+  ctx.font = "11px sans-serif";
+  for (const [p, t] of ax) {
+    const a = proj(o), b = proj(p);
+    ctx.strokeStyle = "#bbb"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    ctx.fillStyle = "#999"; ctx.fillText(t, b[0] + 3, b[1]);
+  }
+}
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  axes();
+  const info = document.getElementById("info");
+  if (view === "cloud") {
+    const P = D.pts[regime], items = [];
+    for (const [f, s] of Object.entries(P)) {
+      if (s.curve) continue;
+      for (const p of s.p) { const q = proj(p); items.push([q[2], q[0], q[1], f]); }
+    }
+    items.sort((a, b) => b[0] - a[0]);
+    for (const [, x, y, f] of items) { ctx.fillStyle = hexA(D.colors[f], f === "thumb" ? 0.18 : 0.35); ctx.fillRect(x - 1.2, y - 1.2, 2.4, 2.4); }
+    for (const [f, s] of Object.entries(P)) {
+      if (!s.curve) continue;
+      ctx.strokeStyle = D.colors[f]; ctx.lineWidth = 3; ctx.beginPath();
+      s.p.forEach((p, i) => { const q = proj(p); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
+      ctx.stroke();
+    }
+    drawSkel(D.skel, 1.5, 0.8);
+    info.textContent = regime === "A"
+      ? "A：每根手指的指尖铺满一片“薄片”——3 个关节轴互相平行，所以只能在一个平面里动，左右厚度为 0。"
+      : "四指指尖只剩一条线（1 个电机），拇指是一团 3D 云（3 个电机）。线和云交到哪里，就是能对捏的地方。";
+  } else {
+    const key = regime + "_" + view, sk = D.poses[key];
+    drawSkel(D.skel, 1, 0.15);
+    drawSkel(sk, 3, 1);
+    const r = D.summary.tasks["pinch_" + view].result[regime];
+    info.textContent = `${RN[regime]}：拇指–${D.cn[view]} 指腹最近 ${r.min_mm} mm，指腹法线夹角 ${r.oppose_deg ?? "—"}°（180° 为正对）→ ${r.verdict}。` +
+      ` 拇指关节 ${r.thumb_deg.join("/")}°，${D.cn[view]}关节 ${r.finger_deg.join("/")}°`;
+  }
+}
+let drag = null;
+cv.onmousedown = e => { drag = [e.clientX, e.clientY]; cv.style.cursor = "grabbing"; };
+window.onmouseup = () => { drag = null; cv.style.cursor = "grab"; };
+window.onmousemove = e => {
+  if (!drag) return;
+  yaw += (e.clientX - drag[0]) * 0.01; pitch += (e.clientY - drag[1]) * 0.01;
+  pitch = Math.max(-1.5, Math.min(1.5, pitch)); drag = [e.clientX, e.clientY]; draw();
+};
+cv.onwheel = e => { e.preventDefault(); zoom *= e.deltaY < 0 ? 1.1 : 0.9; draw(); };
+
+function cls(v) { return v.startsWith("能") ? "ok" : v.startsWith("不能") ? "bad" : "mid"; }
+(function tables() {
+  const ks = Object.keys(RN);
+  let h = "<table><tr><th>手指</th>" + ks.map(k => `<th>${k}</th>`).join("") + "</tr>";
+  for (const f of ["thumb", "index", "middle", "ring", "pinky"]) {
+    h += `<tr><td>${D.cn[f]}</td>` + ks.map(k => {
+      const w = D.summary.workspace[k][f];
+      return `<td>${w.kind} <b>${w.value}</b> ${w.unit}<br><small>指尖可动方向 ${w.tip_dirs} 个</small></td>`;
+    }).join("") + "</tr>";
+  }
+  document.getElementById("ws").innerHTML = h + "</table>";
+  h = "<table><tr><th>任务</th>" + ks.map(k => `<th>${k}</th>`).join("") + "</tr>";
+  for (const t of Object.values(D.summary.tasks)) {
+    h += `<tr><td>${t.title}<br><small>${t.need}</small></td>` + ks.map(k => {
+      const r = t.result[k];
+      const d = r.min_mm !== undefined ? `<br><small>最近 ${r.min_mm} mm${r.oppose_deg != null ? "，夹角 " + r.oppose_deg + "°" : ""}</small>`
+        : r.max_pair_mm !== undefined ? `<br><small>两两最大 ${r.max_pair_mm} mm</small>`
+        : r.lateral_range_mm !== undefined ? `<br><small>左右可动 ${r.lateral_range_mm} mm</small>` : "";
+      return `<td class="${cls(r.verdict)}">${r.verdict}${d}</td>`;
+    }).join("") + "</tr>";
+  }
+  document.getElementById("tasks").innerHTML = h + "</table>";
+})();
+draw();
+</script>
+</body>
+</html>

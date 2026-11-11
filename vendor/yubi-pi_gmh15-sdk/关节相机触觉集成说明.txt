@@ -1,0 +1,39 @@
+GMH15 双手集成观察页面
+地址: http://127.0.0.1:18765/
+左手 H15L49G00062；右手 H15R49G00039。
+
+组成:
+1. 双手触觉采集约10Hz，327点/手，SDK按压坐标及力度。
+2. 掌内相机两路原始640x480图像，约10fps，未做畸变校正。
+3. MuJoCo 3.3.7 CPU离屏渲染，约3~4fps，可切换视角。
+4. 15关节真实角度表（度）。
+
+关节数据:
+- SDK getJointPositionsAngle(...,is_all_joint=True)当前报 Invalid real angle count。
+- 改为读取7个电机位置和8个磁编码器，再调用官方 DexH15Kinematic.forwardKinematicParse(...,return_joint_flag=True)。
+- SDK正解输出真实角度（度），渲染端按命名关节映射并转弧度。
+- 顺序: 食指MCP/PIP/DIP、中指MCP/PIP/DIP、无名指MCP/PIP/DIP、小指MCP/PIP/DIP、拇指CMC/MCP/IP。
+- MuJoCo只执行mj_forward；模型nu=0，无执行器，不运行mj_step，不回传真手。
+- 每只手使用独立串口采样进程；相机和渲染进程没有串口访问代码。
+
+模型来源:
+- SDK 3.9.0自带 DexH15_left_urdf_P / DexH15_right_urdf_P，15个转动关节。
+- 保留厂商视觉STL和关节轴/原点，移除重复碰撞几何以供可视化。
+- 官方URDF转换脚本 prepare_mujoco_models.py，输出 models/left/hand.xml 和 models/right/hand.xml。
+- 无有效关节数据时只显示“REFERENCE POSE / joint data unavailable”，不是实测姿态。
+- 显示图像旋转180度以便指尖朝上，不改变模型或关节坐标。
+
+本次验证:
+- 左手官方正解成功返回15关节，MuJoCo实测姿态有效。
+- 右手原始电机位置全0，官方正解返回错误1027，当前显示参考零位；未为了获取角度执行初始化。
+- 双手相机均正常，左DH-0000008，右DH-0000007，以USB序列号定位。
+- 所有页面图像均实际加载；页面无JS错误，390px宽无横向溢出，视角切换正常。
+- 右手是否执行可能运动的位置初始化，需要用户单独授权。触觉和相机不受该问题影响。
+
+运行:
+树莓派目录 /home/limit/gmh15-sdk
+容器 gmh15-tactile；镜像 gmh15-media:3.9.0；主机端口只绑定127.0.0.1:8765。
+停止只读采集以释放串口和相机: sudo docker stop gmh15-tactile
+再次启动: sudo docker start gmh15-tactile
+USB编号改变时: 停止并移除该容器，再执行 /home/limit/gmh15-sdk/start_tactile_dual.sh 解析稳定路径。
+不提供网页端硬件动作控制。继续执行动作前需先停采集。

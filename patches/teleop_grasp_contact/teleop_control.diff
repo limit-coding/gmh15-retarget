@@ -1,0 +1,104 @@
+--- teleop_control.orig.py	2026-11-06 04:02:02
++++ teleop_control.py	2026-11-06 04:02:46
+@@ -17,6 +17,15 @@
+ MAX_RATE_HZ = 10
+ SLEW_DEG_S = 8.
+ MAX_TRACKING_ERROR_DEG = 10.
++# Grasp handling. A finger blocked by an object makes target-vs-measured error grow until the
++# check above disables the motors and the hand drops the object. When the fingertip tactile pad
++# reports contact, the closing target of that finger's joints is capped to a bounded lead over the
++# measured angle instead (bounded squeeze), so the free-space check never trips on a grasp.
++# Opening is never restricted. Without a contact signal the original behaviour is unchanged.
++JOINT_FINGER = {0: 'index', 2: 'middle', 4: 'ring', 6: 'pinky', 8: 'thumb', 9: 'thumb', 10: 'thumb'}
++CONTACT_DELTA_N = .5        # finger force above its arm-time baseline that counts as contact
++GRASP_LEAD_DEG = 6.         # in contact: closing target may lead the measured angle by at most this
++MAX_CONTACT_FORCE_N = 15.   # in contact above this (minus baseline): no further closing on that finger
+ 
+ 
+ class ReadOnlyHandProxy:
+@@ -71,6 +80,16 @@
+     return result
+ 
+ 
++def finger_forces(frame):
++    """Per-finger tactile force magnitude (N) from the acquisition frame; {} if unavailable."""
++    out = {}
++    for f in frame.get('fingers') or []:
++        v = f.get('force')
++        if isinstance(v, (list, tuple)) and len(v) == 3 and all(isinstance(x, (int, float)) and math.isfinite(x) for x in v):
++            out[f.get('key')] = math.sqrt(sum(float(x) * float(x) for x in v))
++    return out
++
++
+ def measured11(frame):
+     if (not frame.get('connected') or frame.get('joint_error') or
+             time.time() - frame.get('timestamp', 0) > .5 or len(frame.get('joints_degrees', [])) != 15):
+@@ -103,6 +122,8 @@
+         self.initialization_count = 0
+         self.last_init_result = None
+         self.initialization_diagnostics = None
++        self.force_baseline = {}
++        self.grasp = {}
+ 
+     def status(self):
+         return dict(active=self.active, owner=self.owner, error=self.error, reason=self.reason,
+@@ -110,7 +131,9 @@
+                     last_sequence=self.last_sequence, watchdog_ms=int(WATCHDOG_S * 1000),
+                     slew_deg_s=SLEW_DEG_S, max_send_hz=MAX_RATE_HZ,initializing=self.initializing,
+                     initialization_count=self.initialization_count,last_init_result=self.last_init_result,
+-                    initialization_diagnostics=self.initialization_diagnostics)
++                    initialization_diagnostics=self.initialization_diagnostics,
++                    grasp_contact=dict(self.grasp), grasp_lead_deg=GRASP_LEAD_DEG,
++                    contact_delta_n=CONTACT_DELTA_N, max_contact_force_n=MAX_CONTACT_FORCE_N)
+ 
+     def initialize(self,owner):
+         if self.active or self.initializing or self.hand.isMotorEnabled(self.addr):
+@@ -163,6 +186,8 @@
+         self.target = target[:]
+         self.sent = target[:]
+         self.last_sequence = -1
++        self.force_baseline = finger_forces(frame)
++        self.grasp = {}
+         try:
+             self.old_speed = self.hand.getMotorMaxVelocityConfig(self.addr)
+             if not self.hand.setMotorControlMode(self.addr, self.position_mode):
+@@ -214,10 +239,31 @@
+         self.owner = None
+         self.old_speed = None
+         self.touched_enable = False
++        self.force_baseline = {}
++        self.grasp = {}
+         self.reason = reason
+         if cleanup:
+             self.error = '; '.join(cleanup)
+ 
++    def apply_grasp_cap(self, candidate, actual, forces):
++        grasp = {}
++        for i, finger in JOINT_FINGER.items():
++            if finger not in forces:
++                continue
++            excess = forces[finger] - self.force_baseline.get(finger, 0.)
++            if excess < CONTACT_DELTA_N:
++                continue
++            cap = actual[i] + GRASP_LEAD_DEG
++            if excess >= MAX_CONTACT_FORCE_N:
++                cap = min(cap, self.sent[i])
++            low, high = LIMITS[i]
++            cap = max(low, min(high, cap))
++            if candidate[i] > cap:
++                candidate[i] = cap
++            grasp[i] = round(excess, 2)
++        self.grasp = grasp
++        return candidate
++
+     def tick(self, frame):
+         if not self.active:
+             return
+@@ -234,6 +280,7 @@
+                 return
+             step = SLEW_DEG_S * min(elapsed, .15)
+             candidate = [old + max(-step, min(step, goal-old)) for old, goal in zip(self.sent, self.target)]
++            candidate = self.apply_grasp_cap(candidate, actual, finger_forces(frame))
+             if max(abs(a-b) for a, b in zip(candidate, actual)) > MAX_TRACKING_ERROR_DEG:
+                 raise RuntimeError('目标与反馈偏差超过10°，停止控制')
+             ret, normalized = self.kin.calculateNormalizeAngle(candidate, self.hw)

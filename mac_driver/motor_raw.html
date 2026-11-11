@@ -1,0 +1,89 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><title>GMH15 电机直接控制</title>
+<style>
+body{font:14px -apple-system,sans-serif;margin:16px;background:#111;color:#ddd;max-width:1200px}
+h1{font-size:18px;margin:0 0 8px}
+.btns button{font-size:16px;padding:9px 18px;margin:0 8px 8px 0;border:0;border-radius:8px;cursor:pointer;color:#fff;background:#444}
+#arm{background:#1f9d55}#stop{background:#d93025;font-weight:700}button:disabled{opacity:.35;cursor:default}
+#st{font-size:16px;font-weight:600;margin:6px 0}#msg{color:#ffcf5c;min-height:20px;margin-bottom:6px}.err{color:#ff6b6b}
+table{border-collapse:collapse;width:100%}td,th{padding:5px 8px;text-align:right;white-space:nowrap}th{color:#999;font-weight:500}
+td:first-child,th:first-child{text-align:left}input[type=range]{width:320px}input[type=number]{width:72px;background:#222;color:#ddd;border:1px solid #444}
+.small button{padding:3px 8px;font-size:12px;margin:0 1px;border:0;border-radius:4px;background:#333;color:#ddd;cursor:pointer}
+.hot{color:#ff6b6b;font-weight:700}.box{background:#1a1a1a;border-radius:8px;padding:10px;margin-top:12px}
+.j{display:inline-block;min-width:150px;margin:2px 10px 2px 0}
+</style></head><body>
+<h1>GMH15 电机直接控制（原始位置 0–10000）</h1>
+<div class="btns"><button id="init">位置初始化</button><button id="arm">▶ 使能</button><button id="stop">■ 停止（空格 / Esc）</button>
+<button id="zero">全部回 0</button></div>
+<div id="st">连接中…</div><div id="msg"></div>
+<table><thead><tr><th>电机</th><th>目标</th><th></th><th>发送中</th><th>实际位置</th><th>电流</th><th>微调</th></tr></thead><tbody id="tb"></tbody></table>
+<div class="box"><b>关节角（SDK 正解，度）</b> — 看远端关节是否跟着弯：<div id="joints"></div></div>
+<div class="box"><b>8 路磁编码器原始值</b>（括号内为相对“使能时”的变化）：<div id="enc"></div></div>
+<div class="box" style="color:#999">说明：拖动滑块或输入数值后自动发送；电机以每秒 <span id="slew"></span> 计数的速度逼近目标。
+目标和实际相差超过 <span id="maxerr"></span> 计数，或任一电机电流超过 <span id="curstop"></span>（顶住/卡住），都会自动失能。拇指 MCP / IP 滑块上限是实测机械极限以内的 7200 / 7700。
+关掉或切走这个页面会自动停止。</div>
+<script>
+const NAMES=['1 食指','2 中指','3 无名指','4 小指','5 拇指 CMC','6 拇指 MCP','7 拇指 IP'];
+const JN=['食指 MCP','食指 PIP','食指 DIP','中指 MCP','中指 PIP','中指 DIP','无名指 MCP','无名指 PIP','无名指 DIP','小指 MCP','小指 PIP','小指 DIP','拇指 CMC','拇指 MCP','拇指 IP'];
+const $=id=>document.getElementById(id);
+const owner=sessionStorage.rawOwner||(sessionStorage.rawOwner='raw-ui-'+crypto.randomUUID());
+let config=null,frame=null,status=null,owned=false,seq=Date.now(),target=null,dirty=false,encBase=null,lastSend=0;
+const msg=(t,e=false)=>{$('msg').textContent=t;$('msg').className=e?'err':''};
+async function post(action,extra={},keepalive=false,retry=true){
+ const r=await fetch('/api/teleop',{method:'POST',headers:{'Content-Type':'application/json','X-Teleop-Token':config.token},
+  body:JSON.stringify({action,side:'right',owner,...extra}),keepalive});
+ if(r.status===403&&retry){config=await (await fetch('/api/teleop/config',{cache:'no-store'})).json();return post(action,extra,keepalive,false)}
+ const j=await r.json();
+ if(!r.ok&&String(j.error).includes('新鲜')&&retry!==9){for(let k=0;k<12;k++){await new Promise(q=>setTimeout(q,120));
+   const r2=await fetch('/api/teleop',{method:'POST',headers:{'Content-Type':'application/json','X-Teleop-Token':config.token},body:JSON.stringify({action,side:'right',owner,...extra})});
+   const j2=await r2.json();if(r2.ok&&j2.accepted)return j2;if(!String(j2.error).includes('新鲜'))throw Error(j2.error||'未被接受')}}
+ if(!r.ok||!j.accepted)throw Error(j.error||'未被接受');return j}
+async function stop(){owned=false;try{await post('stop',{},true);msg('已停止（失能）')}catch(e){msg('停止未确认：'+e.message,true)}}
+let tbBuilt=false;
+function build(){let h='';NAMES.forEach((n,i)=>{h+=`<tr><td>${n}</td><td><input type=number id=n${i} min=0 max=10000 step=50></td>
+<td><input type=range id=r${i} min=0 max=10000 step=50></td><td id=s${i}>—</td><td id=a${i}>—</td><td id=c${i}>—</td>
+<td class=small><button data-i=${i} data-d=-500>−500</button><button data-i=${i} data-d=-100>−100</button><button data-i=${i} data-d=100>+100</button><button data-i=${i} data-d=500>+500</button></td></tr>`});
+ $('tb').innerHTML=h;
+ NAMES.forEach((_,i)=>{$('r'+i).oninput=e=>setT(i,e.target.value);$('n'+i).onchange=e=>setT(i,e.target.value)});
+ document.querySelectorAll('.small button').forEach(b=>b.onclick=()=>{if(target)setT(+b.dataset.i,target[+b.dataset.i]+ +b.dataset.d)});
+ tbBuilt=true}
+function setT(i,v){if(!target)return;const hi=(config?.motor_hi||[])[i]??10000;v=Math.round(Math.max(0,Math.min(hi,Number(v))));if(!Number.isFinite(v))return;
+ target[i]=v;$('r'+i).value=v;$('n'+i).value=v;dirty=true;send()}
+async function send(){if(!owned||!dirty||Date.now()-lastSend<90)return;lastSend=Date.now();dirty=false;
+ try{await post('motor_target',{control_enabled:true,sequence:++seq,motor_counts:target})}catch(e){msg('发送失败：'+e.message,true)}}
+setInterval(send,100);
+$('init').onclick=async()=>{try{await post('initialize',{confirm_initialization:true});msg('位置初始化中（约 2 秒，手指会回零）…')}catch(e){msg(e.message,true)}};
+$('arm').onclick=async()=>{try{await post('arm',{control_enabled:true});msg('正在使能…')}catch(e){msg(e.message,true)}};
+$('stop').onclick=stop;
+$('zero').onclick=()=>{if(target)for(let i=0;i<7;i++)setT(i,0)};
+document.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Escape')&&e.target.tagName!=='INPUT'){e.preventDefault();stop()}});
+function leave(){if(owned){owned=false;post('stop',{},true).catch(()=>{})}}
+addEventListener('pagehide',leave);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')leave()});
+setInterval(()=>{if(owned)post('heartbeat',{control_enabled:true}).catch(()=>{})},150);
+function render(){
+ if(!tbBuilt)build();
+ if(config?.motor_hi)config.motor_hi.forEach((h,i)=>{$('r'+i).max=h;$('n'+i).max=h});
+ const fresh=frame&&frame.connected&&frame.age_ms<600;const was=owned;
+ owned=Boolean(status?.active&&status.owner===owner);
+ if(owned&&!was){target=(status.motor_sent||frame.motor_positions).slice();encBase=(frame.magnetic_encoders||[]).slice();
+  for(let i=0;i<7;i++){$('r'+i).value=target[i];$('n'+i).value=target[i]}msg('已使能：拖动滑块控制，空格/Esc 停止')}
+ if(!owned&&was&&status?.error)msg('已失能：'+status.error,true);
+ const other=status?.active&&!owned;
+ $('arm').disabled=!fresh||status?.active||status?.last_init_result!==1;$('init').disabled=!fresh||status?.active;
+ $('zero').disabled=!owned;NAMES.forEach((_,i)=>{$('r'+i).disabled=!owned;$('n'+i).disabled=!owned});
+ $('st').innerHTML=!fresh?'<span class=err>没有新鲜的设备反馈</span>':
+  (owned?'<span class=hot>已使能（本页控制中）</span>':other?'<span class=err>另一个程序正在控制，先在那边停止</span>':
+  (status?.last_init_result===1?'未使能（点 ▶ 使能）':'未初始化（先点 位置初始化）'))+
+  ` · 故障 ${frame?.device_diagnostics?.faults?.length?JSON.stringify(frame.device_diagnostics.faults):'无'}`+
+  (status?.error?` · <span class=err>${status.error}</span>`:'');
+ $('slew').textContent=status?.motor_slew_cps??'—';$('maxerr').textContent=status?.motor_max_error??'—';$('curstop').textContent=status?.current_stop??'—';
+ const cur=frame?.motor_current||frame?.device_diagnostics?.actual_current||[];const lim=frame?.device_diagnostics?.max_current||[];
+ if(!owned&&frame?.motor_positions)for(let i=0;i<7;i++){$('r'+i).value=frame.motor_positions[i];$('n'+i).value=frame.motor_positions[i]}
+ for(let i=0;i<7;i++){$('a'+i).textContent=frame?.motor_positions?.[i]??'—';$('s'+i).textContent=owned&&status.motor_sent?status.motor_sent[i]:'—';
+  const c=cur[i];$('c'+i).textContent=c==null?'—':c;$('c'+i).className=(c!=null&&lim[i]&&Math.abs(c)>.6*(status?.current_stop||1000))?'hot':''}
+ const jd=frame?.joints_degrees||[];$('joints').innerHTML=jd.length?JN.map((n,i)=>`<span class=j>${n}: ${jd[i].toFixed(1)}</span>`).join(''):(frame?.joint_error||'—');
+ const enc=frame?.magnetic_encoders||[];$('enc').innerHTML=enc.map((v,i)=>`<span class=j>#${i+1}: ${v}${encBase&&encBase[i]!=null?` (${v-encBase[i]>=0?'+':''}${v-encBase[i]})`:''}</span>`).join('');
+}
+async function poll(){try{const r=await fetch('/api/state',{cache:'no-store'});const d=await r.json();frame=d.hands.right;status=d.teleop.right;render()}
+ catch(e){$('st').innerHTML='<span class=err>服务未运行</span>';if(owned)leave()}}
+(async()=>{try{config=await (await fetch('/api/teleop/config')).json();setInterval(poll,150);poll()}catch(e){msg('无法读取服务配置：'+e.message,true)}})();
+</script></body></html>
